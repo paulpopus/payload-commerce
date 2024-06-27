@@ -7,7 +7,7 @@ module.exports = withPayload({
   },
   images: {
     formats: ['image/avif', 'image/webp'],
-    remotePatterns: [{ hostname: 'localhost' }],
+    remotePatterns: [{ hostname: 'localhost' }, { hostname: process.env.NEXT_PUBLIC_IMAGE_HOST }],
   },
   async redirects() {
     return [
