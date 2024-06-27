@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { Banner } from '@/payload/blocks/Banner'
 import { Carousel } from '@/payload/blocks/Carousel'
 import { ThreeItemGrid } from '@/payload/blocks/ThreeItemGrid'
+import { generatePreviewPath } from '@/payload/utilities/generatePreviewPath'
 
 import { admins } from '../../access/admins'
 import { Archive } from '../../blocks/ArchiveBlock'
@@ -24,11 +25,16 @@ export const Pages: CollectionConfig = {
   },
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
-    preview: (doc) => {
-      return `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/next/preview?url=${encodeURIComponent(
-        `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/${doc.slug !== 'home' ? doc.slug : ''}`,
-      )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`
+    livePreview: {
+      url: ({ data }) => {
+        const path = generatePreviewPath({
+          path: `/${typeof data?.slug === 'string' ? data.slug : ''}`,
+        })
+        return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`
+      },
     },
+    preview: (doc) =>
+      generatePreviewPath({ path: `/${typeof doc?.slug === 'string' ? doc.slug : ''}` }),
     useAsTitle: 'title',
   },
   fields: [
@@ -83,6 +89,9 @@ export const Pages: CollectionConfig = {
     afterChange: [revalidatePage],
   },
   versions: {
-    drafts: true,
+    drafts: {
+      autosave: true,
+    },
+    maxPerDoc: 50,
   },
 }

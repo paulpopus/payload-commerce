@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { generatePreviewPath } from '@/payload/utilities/generatePreviewPath'
 import {
   FixedToolbarFeature,
   HeadingFeature,
@@ -35,11 +36,16 @@ export const Products: CollectionConfig = {
   },
   admin: {
     defaultColumns: ['title', 'stripeProductID', '_status'],
-    preview: (doc) => {
-      return `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/next/preview?url=${encodeURIComponent(
-        `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/products/${doc.slug}`,
-      )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`
+    livePreview: {
+      url: ({ data }) => {
+        const path = generatePreviewPath({
+          path: `/product/${typeof data?.slug === 'string' ? data.slug : ''}`,
+        })
+        return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`
+      },
     },
+    preview: (doc) =>
+      generatePreviewPath({ path: `/product/${typeof doc?.slug === 'string' ? doc.slug : ''}` }),
     useAsTitle: 'title',
   },
   fields: [
@@ -372,6 +378,9 @@ export const Products: CollectionConfig = {
     beforeChange: [beforeProductChange],
   },
   versions: {
-    drafts: true,
+    drafts: {
+      autosave: true,
+    },
+    maxPerDoc: 50,
   },
 }

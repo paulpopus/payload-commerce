@@ -66,7 +66,7 @@ export const Users: CollectionConfig = {
       name: 'roles',
       type: 'select',
       access: {
-        create: admins,
+        /* create: admins, */
         read: admins,
         update: admins,
       },
@@ -90,7 +90,7 @@ export const Users: CollectionConfig = {
       name: 'orders',
       type: 'relationship',
       access: {
-        create: admins,
+        /* create: admins, */
         update: admins,
       },
       hasMany: true,
@@ -101,7 +101,7 @@ export const Users: CollectionConfig = {
       name: 'stripeCustomerID',
       type: 'text',
       access: {
-        create: admins,
+        /* create: admins, */
         read: admins,
         update: admins,
       },
@@ -193,7 +193,6 @@ export const Users: CollectionConfig = {
     },
   ],
   hooks: {
-    afterChange: [loginAfterCreate],
     beforeChange: [createStripeCustomer],
   },
   timestamps: true,
