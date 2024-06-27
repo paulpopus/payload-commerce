@@ -1,13 +1,12 @@
-import type { Media, Product } from '@/payload-types'
+import type { Product } from '@/payload-types'
 
 import configPromise from '@payload-config'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
-import Link from 'next/link'
 import React from 'react'
 
 import type { CarouselBlockProps } from './types'
 
-import { GridTileImage } from '../../components/grid/tile'
+import { CarouselClient } from './Carousel.client'
 
 export const CarouselBlock: React.FC<
   CarouselBlockProps & {
@@ -52,30 +51,9 @@ export const CarouselBlock: React.FC<
 
   if (!products?.length) return null
 
-  // Purposefully duplicating products to make the carousel loop and not run out of products on wide screens.
-  const carouselProducts = [...products, ...products, ...products]
-
   return (
-    <div className=" w-full overflow-x-auto pb-6 pt-1">
-      <ul className="flex animate-carousel gap-4">
-        {carouselProducts.map((product, i) => (
-          <li
-            className="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-1/3"
-            key={`${product.slug}${i}`}
-          >
-            <Link className="relative h-full w-full" href={`/product/${product.slug}`}>
-              <GridTileImage
-                label={{
-                  amount: product.price,
-                  currencyCode: product.currency,
-                  title: product.title,
-                }}
-                media={product.meta.image as Media}
-              />
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <div className=" w-full pb-6 pt-1">
+      <CarouselClient products={products} />
     </div>
   )
 }
